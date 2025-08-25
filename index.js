@@ -33,13 +33,17 @@ async function run() {
 
     const visaColl = client.db("visaDB").collection("Visas")
 
+    app.get("/visas", async(req, res)=>{
+      const result = await visaColl.find().toArray()
+      res.send(result)
+    })
+
+
     app.post("/visas", async(req, res)=>{
       const visas = req.body
       const result = await visaColl.insertOne(visas)
       res.send(result)
     })
-     
-
 
 
 
