@@ -32,6 +32,7 @@ async function run() {
     await client.connect();
 
     const visaColl = client.db("visaDB").collection("Visas")
+    const appliedVisaColl = client.db("visaDB").collection("Applied Visas")
 
     // Getting all visas
     app.get("/visas", async(req, res)=>{
@@ -47,12 +48,28 @@ async function run() {
       res.send(result)
     })
 
+    // adding visa
     app.post("/visas", async(req, res)=>{
       const visas = req.body
       const result = await visaColl.insertOne(visas)
       res.send(result)
     })
 
+    // visa application
+    app.post("/visa/apply", async(req, res)=>{
+      const {addedVisaId, applicantEmail} = req.body
+      const query = {addedVisaId: addedVisaId,
+        applicantEmail: applicantEmail
+      }
+      const alreadyApplied = await appliedVisaColl.findOne(query)
+      if(alreadyApplied){
+        return res.status(400).json({message: "Application already submitted for this visa"})
+      }
+
+      const visaApplication = req.body
+      const result = await appliedVisaColl.insertOne(visaApplication)
+      res.send(result)
+    })
 
 
 
