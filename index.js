@@ -48,6 +48,14 @@ async function run() {
       res.send(result)
     })
 
+    // Getting the added visas based on email
+    app.get("/my-added-visa", async(req, res)=>{
+      const email = req.query.email
+      const query = {email: email}
+      const result = await visaColl.find(query).toArray()
+      res.send(result)
+    })
+
     // adding visa
     app.post("/visas", async(req, res)=>{
       const visas = req.body
